@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NetCore.web.Models
+namespace NetCore.Data.ViewModels
 {
+    // 화면 전용 모델(로그인 화면에서 필요한 것만 있음
     public class LoginInfo
     {
         [Required(ErrorMessage = "사용자 아이디를 입력하세요.")]

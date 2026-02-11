@@ -1,3 +1,6 @@
+using NetCore.Services.Interfaces;
+using NetCore.Services.Svcs;
+
 namespace NetCore.web
 {
     public class Program
@@ -8,6 +11,11 @@ namespace NetCore.web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // 의존성 주입을 사용하기 위해서 서비스로 등록
+            // 껍데기             내용물
+            // IUser 인터페이스에 UserService 클래스 인스턴스 주입
+            builder.Services.AddScoped<IUser, UserService>();
 
             var app = builder.Build();
 
