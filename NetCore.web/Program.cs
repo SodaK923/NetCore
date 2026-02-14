@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using NetCore.Services.Data;
 using NetCore.Services.Interfaces;
 using NetCore.Services.Svcs;
 
@@ -16,6 +18,11 @@ namespace NetCore.web
             // 껍데기             내용물
             // IUser 인터페이스에 UserService 클래스 인스턴스 주입
             builder.Services.AddScoped<IUser, UserService>();
+
+            // DB 접속 정보, Migrations 프로젝트 지정
+            builder.Services.AddDbContext<CodeFirstDbContext>(options =>
+            options.UseSqlServer(connectionString: builder.Configuration.GetConnectionString(name:"DefaultConnection"),
+            sqlServerOptionsAction: mig => mig.MigrationsAssembly(assemblyName: "NetCore.Migrations")));
 
             var app = builder.Build();
 

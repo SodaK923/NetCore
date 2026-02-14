@@ -12,6 +12,8 @@ namespace NetCore.web.Controllers
 
         // 의존성 주입 - 생성자
         // 생성자의 파라미터를 통해 인터페이스를 지정하여 서비스 클래스 인스턴스를 받아옴
+        // builder.Services.AddScoped<IUser, UserService>(); -> Program.cs, IUser 인터페이스에 UserService 클래스 인스턴스 주입
+
         private IUser _user;
 
         public MembershipController(IUser user)

@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.23">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NetCore.Migrations\NetCore.Migrations.csproj" />
     <ProjectReference Include="..\NetCore.Services\NetCore.Services.csproj" />
   </ItemGroup>
 
