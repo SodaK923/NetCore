@@ -1,4 +1,5 @@
 ﻿//using NetCore.Data.DataModels;
+using Microsoft.EntityFrameworkCore;
 using NetCore.Data.Classes;
 using NetCore.Data.ViewModels;
 using NetCore.Services.Data;
@@ -37,11 +38,47 @@ namespace NetCore.Services.Svcs
             //};
         }
 
+        private User GetUserInfo(string userId, string password)
+        {
+            User user;
+
+            // 람다(권장)
+            user = _context.Users.Where(u=>u.UserId.Equals(userId) && u.Password.Equals(password)).FirstOrDefault();
+
+            // FromSql(Table, View, Function, Stored Procedure)
+
+            // Table
+            //user = _context.Users.FromSqlRaw("SELECT UserId, UserName, UserEmail, Password, IsMembershipWithdrawn, JoinedUtcDate FROM dbo.[User]")
+            //    .Where(u => u.UserId.Equals(userId) && u.Password.Equals(password))
+            //    .FirstOrDefault();
+
+            // view
+            //user = _context.Users.FromSqlRaw("SELECT UserId, UserName, UserEmail, Password, IsMembershipWithdrawn, JoinedUtcDate FROM dbo.[uvwUser]")
+            //    .Where(u => u.UserId.Equals(userId) && u.Password.Equals(password))
+            //    .FirstOrDefault();
+
+            // function -> 안됨
+            //user = _context.Users.FromSqlRaw($"SELECT UserId, UserName, UserEmail, Password, IsMembershipWithdrawn, JoinedUtcDate FROM dbo.ufnUser({userId}, {password})")
+            //    .FirstOrDefault();
+
+            //user = _context.Users
+            //    .FromSqlInterpolated($"SELECT UserId, UserName, UserEmail, Password, IsMembershipWithdrawn, JoinedUtcDate FROM dbo.ufnUser")
+            //    .FirstOrDefault();
+
+
+            // stored procedure(권장) -> 안됨
+            //user = _context.Users.FromSql("dbo.uspCheckLoginByUserId @p0, @p1", new[] {userId, password}) // int 식이 들어가면 ToString()을 써줘야됨
+            //    .FirstOrDefault();
+
+            return user;
+        }
+
         private bool CheckTheUserInfo(string userId, string password)
         {
             // LINQ: GetUserInfos()에서 사용자 정보를 받아와서, 입력받은 userId와 password가 일치하는 사용자가 있는지 확인
             // Any(): 조건에 맞는 요소가 하나라도 있는지 확인하는 메서드
-            return GetUserInfos().Where(u => u.UserId.Equals(userId) && u.Password.Equals(password)).Any();
+            // return GetUserInfos().Where(u => u.UserId.Equals(userId) && u.Password.Equals(password)).Any();
+            return GetUserInfo(userId, password) != null ? true : false;
         }
 
         #endregion
