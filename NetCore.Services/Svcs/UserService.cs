@@ -1,5 +1,7 @@
-﻿using NetCore.Data.DataModels;
+﻿//using NetCore.Data.DataModels;
+using NetCore.Data.Classes;
 using NetCore.Data.ViewModels;
+using NetCore.Services.Data;
 using NetCore.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,21 +13,28 @@ namespace NetCore.Services.Svcs
 {
     public class UserService : IUser
     {
+        private DBFirstDbContext _context;
+
+        public UserService(DBFirstDbContext context)
+        {
+            _context = context;
+        }
         // User 테이블에서 사용자 정보를 받아오는 메서드
         #region private methods
         private IEnumerable<User> GetUserInfos()
         {
-            return new List<User>()
-            {
-                new User()
-                {
-                    UserId = "jadejs",
-                    UserName = "김정수",
-                    UserEmail = "jadejskim@gmail.com",
-                    Password = "123456"
+            return _context.Users.ToList();
+            //return new List<User>()
+            //{
+            //    new User()
+            //    {
+            //        UserId = "jadejs",
+            //        UserName = "김정수",
+            //        UserEmail = "jadejskim@gmail.com",
+            //        Password = "123456"
 
-                }
-            };
+            //    }
+            //};
         }
 
         private bool CheckTheUserInfo(string userId, string password)

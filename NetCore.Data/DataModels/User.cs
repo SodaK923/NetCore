@@ -30,7 +30,7 @@ namespace NetCore.Data.DataModels
         public bool? IsMembershipWithdrawn { get; set; } // 탈퇴 여부
 
         [Required]
-        public string JoinedUtcDate { get; set; }
+        public DateTime JoinedUtcDate { get; set; }
 
         // FK 지정
         [ForeignKey("UserId")]

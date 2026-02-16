@@ -20,9 +20,13 @@ namespace NetCore.web
             builder.Services.AddScoped<IUser, UserService>();
 
             // DB 접속 정보, Migrations 프로젝트 지정
-            builder.Services.AddDbContext<CodeFirstDbContext>(options =>
-            options.UseSqlServer(connectionString: builder.Configuration.GetConnectionString(name:"DefaultConnection"),
-            sqlServerOptionsAction: mig => mig.MigrationsAssembly(assemblyName: "NetCore.Migrations")));
+            //builder.Services.AddDbContext<CodeFirstDbContext>(options =>
+            //options.UseSqlServer(connectionString: builder.Configuration.GetConnectionString(name:"DefaultConnection"),
+            //sqlServerOptionsAction: mig => mig.MigrationsAssembly(assemblyName: "NetCore.Migrations")));
+
+            // DB 접속 정보만
+            builder.Services.AddDbContext<DBFirstDbContext>(options =>
+            options.UseSqlServer(connectionString: builder.Configuration.GetConnectionString(name: "DBFirstDBConnection")));
 
             var app = builder.Build();
 
