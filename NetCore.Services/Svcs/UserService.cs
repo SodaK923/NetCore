@@ -43,7 +43,7 @@ namespace NetCore.Services.Svcs
             User user;
 
             // 람다(권장)
-            user = _context.Users.Where(u=>u.UserId.Equals(userId) && u.Password.Equals(password)).FirstOrDefault();
+            // user = _context.Users.Where(u=>u.UserId.Equals(userId) && u.Password.Equals(password)).FirstOrDefault();
 
             // FromSql(Table, View, Function, Stored Procedure)
 
@@ -67,8 +67,14 @@ namespace NetCore.Services.Svcs
 
 
             // stored procedure(권장) -> 안됨
-            //user = _context.Users.FromSql("dbo.uspCheckLoginByUserId @p0, @p1", new[] {userId, password}) // int 식이 들어가면 ToString()을 써줘야됨
-            //    .FirstOrDefault();
+            user = _context.Users.FromSqlInterpolated($"EXEC dbo.uspCheckLoginByUserId {userId} , {password}") // int 식이 들어가면 ToString()을 써줘야됨
+                .FirstOrDefault();
+
+            if (user == null)
+            {
+                // 접속 실패 횟수에 대한 증가
+                int rowAffected = _context.Database.ExecuteSqlInterpolated($"Update dbo.[User] SET AccessFailedCount += 1 WHERE UserId = {userId}");
+            }
 
             return user;
         }
