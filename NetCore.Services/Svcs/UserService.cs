@@ -73,7 +73,13 @@ namespace NetCore.Services.Svcs
             if (user == null)
             {
                 // 접속 실패 횟수에 대한 증가
-                int rowAffected = _context.Database.ExecuteSqlInterpolated($"Update dbo.[User] SET AccessFailedCount += 1 WHERE UserId = {userId}");
+                int rowAffected;
+
+                // SQL문 직접 작성
+                // rowAffected = _context.Database.ExecuteSqlInterpolated($"Update dbo.[User] SET AccessFailedCount += 1 WHERE UserId = {userId}");
+
+                // Stored Procedure 사용
+                rowAffected = _context.Database.ExecuteSqlInterpolated($"dbo.FailedLoginByUserId @p0", new[] {userId});
             }
 
             return user;

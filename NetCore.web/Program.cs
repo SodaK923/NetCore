@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using NetCore.Services.Data;
 using NetCore.Services.Interfaces;
@@ -13,6 +14,11 @@ namespace NetCore.web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"C\DataProtector\"))
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(7))
+                .SetApplicationName("NetCore");
 
             // 의존성 주입을 사용하기 위해서 서비스로 등록
             // 껍데기             내용물
