@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NetCore.Services.Data;
 using NetCore.Services.Interfaces;
 using NetCore.Services.Svcs;
+using NetCore.Utilities.Utils;
 
 namespace NetCore.web
 {
@@ -15,10 +16,7 @@ namespace NetCore.web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(@"C\DataProtector\"))
-                .SetDefaultKeyLifetime(TimeSpan.FromDays(7))
-                .SetApplicationName("NetCore");
+            Common.SetDataProtection(builder.Services, @"C:\DataProtector\", "NetCore", Enums.cryptoType.CngCbc);
 
             // 의존성 주입을 사용하기 위해서 서비스로 등록
             // 껍데기             내용물

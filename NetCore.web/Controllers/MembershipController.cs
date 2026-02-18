@@ -14,11 +14,11 @@ namespace NetCore.web.Controllers
         // 생성자의 파라미터를 통해 인터페이스를 지정하여 서비스 클래스 인스턴스를 받아옴
         // builder.Services.AddScoped<IUser, UserService>(); -> Program.cs, IUser 인터페이스에 UserService 클래스 인스턴스 주입
 
-        private IUser _user;
+        private IUser _user; // IUser 인터페이스 타입의 필드 선언
 
-        public MembershipController(IUser user)
+        public MembershipController(IUser user) // 생성자에서 IUser 인터페이스 타입의 매개변수를 받아서 필드에 할당
         {
-            _user = user;
+            _user = user; // 의존성 주입을 통해 IUser 인터페이스 타입의 인스턴스를 받아와서 _user 필드에 할당
         }
 
         public IActionResult Index()
@@ -36,7 +36,7 @@ namespace NetCore.web.Controllers
         [HttpPost]
         // Post 방식엔 지정해줘야 함
         [ValidateAntiForgeryToken] // 위조 방지 토큰을 통해 view로 부터 받은 Post Data가 유효한지 검증(Forgery: 위조)
-        public IActionResult Login(LoginInfo login)
+        public IActionResult Login(LoginInfo login) // LoginInfo 모델을 매개변수로 받아서 로그인 정보를 전달받음
         {
             string message = string.Empty;
 

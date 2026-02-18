@@ -1,9 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NetCore.Data.ViewModels
 {
-    // 화면 전용 모델(로그인 화면에서 필요한 것만 있음
-    public class LoginInfo
+    public class AESInfo
     {
         [Required(ErrorMessage = "사용자 아이디를 입력하세요.")]
         [MinLength(6, ErrorMessage = "사용자 아이디는 6자 이상 입력하세요.")]
@@ -15,5 +19,12 @@ namespace NetCore.Data.ViewModels
         [MinLength(6, ErrorMessage = "비밀번호는 6자 이상 입력하세요.")]
         [Display(Name = "비밀번호")]
         public string Password { get; set; }
+
+        [DataType(DataType.MultilineText)] // 여러 줄 입력이 가능하도록 설정]
+        [Display(Name = "암호화 정보")] // 화면에서 보여지는 이름
+        public string? EncUserInfo { get; set; } // ****************** ?로 null 허용을 해줘야 함 ****************
+
+        [Display(Name = "복호화 정보")]
+        public string? DecUserInfo { get; set; }
     }
 }
