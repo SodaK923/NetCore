@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using NetCore.Services.Data;
@@ -14,7 +15,9 @@ namespace NetCore.web
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(); // 컨트롤러와 뷰를 함께 사용할 때 필요
+
+            builder.Services.AddHttpContextAccessor();
 
             Common.SetDataProtection(builder.Services, @"C:\DataProtector\", "NetCore", Enums.cryptoType.CngCbc);
 
@@ -32,6 +35,21 @@ namespace NetCore.web
             builder.Services.AddDbContext<DBFirstDbContext>(options =>
             options.UseSqlServer(connectionString: builder.Configuration.GetConnectionString(name: "DBFirstDBConnection")));
 
+            // builder.Services.AddMvc(); // 컨트롤러 없이 단독으로 뷰만 사용할 때 필요
+
+
+
+
+            // 신원보증과 승인권한
+            builder.Services.AddAuthentication(defaultScheme: CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.AccessDeniedPath = "/Membership/Forbidden";
+                    options.LoginPath = "/Membership/Login";
+                });
+            builder.Services.AddAuthorization();
+           
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -44,6 +62,10 @@ namespace NetCore.web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+
+            // 신원보증만
+            app.UseAuthentication();
 
             app.UseRouting();
 

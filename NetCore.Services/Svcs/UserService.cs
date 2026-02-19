@@ -93,11 +93,42 @@ namespace NetCore.Services.Svcs
             return GetUserInfo(userId, password) != null ? true : false;
         }
 
+        private User GetUserInfo(string userId)
+        {
+            return _context.Users.Where(u => u.UserId.Equals(userId)).FirstOrDefault();
+        }
+
+        private IEnumerable<UserRolesByUser> GetUserRolesByUserInfos(string userId)
+        {
+            var userRolesByUserInfos = _context.UserRolesByUsers.Where(uru => uru.UserId.Equals(userId)).ToList();
+
+            foreach(var role in userRolesByUserInfos)
+            {
+                role.Role = GetUserRole(role.RoleId);
+            }
+
+            return userRolesByUserInfos.OrderByDescending(uru => uru.Role.RolePriority);
+        }
+
+        private UserRole GetUserRole(string roleId)
+        {
+            return _context.UserRoles.Where(ur => ur.RoleId.Equals(roleId)).FirstOrDefault();
+        }
         #endregion
 
         bool IUser.MatchTheUserInfo(LoginInfo login)
         {
             return CheckTheUserInfo(login.UserId, login.Password);
+        }
+
+        User IUser.GetUserInfo(string userId)
+        {
+            return GetUserInfo(userId); // GetUserInfo 메서드 생성 -> 인터페이스에서 정의 -> 서비스에서 명시적 구현
+        }
+
+        public IEnumerable<UserRolesByUser> GetRolesOwnedByUser(string userId)
+        {
+            return GetUserRolesByUserInfos(userId);
         }
     }
 

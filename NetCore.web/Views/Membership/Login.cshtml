@@ -24,6 +24,13 @@
                 <input type="password" class="form-control" asp-for="Password" placeholder="Password" />
                 <span class="text-danger" asp-validation-for="Password"></span>
             </div>
+            <div class="checkbox">
+                <label asp-for="RememberMe">
+                    <input type="checkbox" asp-for="RememberMe" placeholder="Remember me" />
+                    @Html.DisplayNameFor(m=>m.RememberMe)
+                </label>
+                <span class="text-danger" asp-validation-for="RememberMe"></span>
+            </div>
             <button type="submit" name="btnLogin" class="btn btn-lg btn-success btn-block">멤버십 로그인</button>
         </form>
     </div>

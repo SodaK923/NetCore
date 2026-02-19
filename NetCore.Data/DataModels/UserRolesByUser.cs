@@ -23,6 +23,6 @@ namespace NetCore.Data.DataModels
 
         public virtual User User { get; set; }
 
-        public virtual UserRole UserRole { get; set; }
+        public virtual UserRole Role { get; set; } // 타입이랑 이름이 겹쳐서 UserRole -> Role로 수정
     }
 }
