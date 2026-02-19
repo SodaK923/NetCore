@@ -43,7 +43,8 @@ namespace NetCore.Services.Svcs
             User user;
 
             // 람다(권장)
-            user = _context.Users.Where(u=>u.UserId.Equals(userId) && u.Password.Equals(password)).FirstOrDefault();
+            //user = _context.Users.Where(u=>u.UserId.Equals(userId) && u.Password.Equals(password)).FirstOrDefault();
+            user = _context.Users.Where(u => u.UserId.Equals(userId)).FirstOrDefault(); // IPasswordHasher 거 써가지고 임시로 바꿈
 
             // FromSql(Table, View, Function, Stored Procedure)
 

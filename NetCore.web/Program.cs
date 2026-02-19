@@ -25,6 +25,7 @@ namespace NetCore.web
             // 껍데기             내용물
             // IUser 인터페이스에 UserService 클래스 인스턴스 주입
             builder.Services.AddScoped<IUser, UserService>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             // DB 접속 정보, Migrations 프로젝트 지정
             //builder.Services.AddDbContext<CodeFirstDbContext>(options =>

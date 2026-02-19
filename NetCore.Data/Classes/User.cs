@@ -16,7 +16,11 @@ namespace NetCore.Data.Classes
 
         public string UserEmail { get; set; } = null!;
 
-        public string Password { get; set; } = null!;
+        public string GUIDSalt { get; set; } = null!;
+
+        public string RNGSalt { get; set; } = null!;
+
+        public string PasswordHash { get; set; } = null!;
 
         public int AccessFailedCount { get; set; }
 

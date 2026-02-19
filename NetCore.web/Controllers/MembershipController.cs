@@ -22,10 +22,12 @@ namespace NetCore.web.Controllers
 
         private IUser _user; // IUser 인터페이스 타입의 필드 선언
         private HttpContext _context;
+        private IPasswordHasher _hasher;
 
-        public MembershipController(IHttpContextAccessor accessor, IUser user) // 생성자에서 IUser 인터페이스 타입의 매개변수를 받아서 필드에 할당
+        public MembershipController(IHttpContextAccessor accessor, IPasswordHasher hasher, IUser user) // 생성자에서 IUser 인터페이스 타입의 매개변수를 받아서 필드에 할당
         {
             _context = accessor.HttpContext; // HttpContextAccessor를 통해 현재 HTTP 컨텍스트에 접근하여 _context 필드에 할당
+            _hasher = hasher;
             _user = user; // 의존성 주입을 통해 IUser 인터페이스 타입의 인스턴스를 받아와서 _user 필드에 할당
         }
 
@@ -77,7 +79,11 @@ namespace NetCore.web.Controllers
 
                 // DB에서 값을 가져와야 함 -> 컨트롤러가 담당하는게 아님(서비스, 리포지토리 등)
                 // 서비스 계층을 두고 의존성 주입을 통해 처리하는게 좋음
-                if (_user.MatchTheUserInfo(login))
+                //if (_user.MatchTheUserInfo(login))
+                //string guidSalt = string.Empty;
+                //string rngSalt = string.Empty;
+                //string passwordHash = string.Empty;
+                if (_hasher.MatchTheUserInfo(login.UserId, login.Password))
                 {
                     // 신원보증과 승인권한
                     var userInfo = _user.GetUserInfo(login.UserId);
