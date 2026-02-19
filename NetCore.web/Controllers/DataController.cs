@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using NetCore.Data.ViewModels;
 
@@ -14,6 +15,7 @@ namespace NetCore.web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "GeneralUser, SuperUser, SystemUser")]
         public IActionResult AES()
         {
             return View();
@@ -21,6 +23,7 @@ namespace NetCore.web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GeneralUser, SuperUser, SystemUser")]
         public IActionResult AES(AESInfo aes) // AESInfo 뷰모델을 매개변수로 받음
         {
             string message = string.Empty;
