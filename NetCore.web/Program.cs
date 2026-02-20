@@ -66,9 +66,11 @@ namespace NetCore.web
 
 
             // 신원보증만
-            app.UseAuthentication();
 
             app.UseRouting();
+            app.UseAuthentication();
+
+            
 
             app.UseAuthorization();
 

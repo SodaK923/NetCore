@@ -79,11 +79,11 @@ namespace NetCore.web.Controllers
 
                 // DB에서 값을 가져와야 함 -> 컨트롤러가 담당하는게 아님(서비스, 리포지토리 등)
                 // 서비스 계층을 두고 의존성 주입을 통해 처리하는게 좋음
-                //if (_user.MatchTheUserInfo(login))
+                if (_user.MatchTheUserInfo(login))
                 //string guidSalt = string.Empty;
                 //string rngSalt = string.Empty;
                 //string passwordHash = string.Empty;
-                if (_hasher.MatchTheUserInfo(login.UserId, login.Password))
+                //if (_hasher.MatchTheUserInfo(login.UserId, login.Password))
                 {
                     // 신원보증과 승인권한
                     var userInfo = _user.GetUserInfo(login.UserId);
@@ -133,6 +133,45 @@ namespace NetCore.web.Controllers
             }
             ModelState.AddModelError(string.Empty, message);
             return View("Login", login); // 로그인 실패 시 로그인 페이지로 다시 이동, 입력한 로그인 정보를 유지하기 위해 login 모델을 전달
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register(string? returnUrl)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public IActionResult Register(RegisterInfo register, string? returnUrl)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            string message = string.Empty;
+            if (ModelState.IsValid)
+            {
+                // 사용자 가입 서비스
+                if(_user.RegisterUser(register) > 0)
+                {
+                    TempData["Message"] = "사용자 가입이 성공적으로 이루어졌습니다.";
+                    return RedirectToAction("Login", "Membership");
+                }
+                else
+                {
+                    message = "사용자가 가입되지 않았습니다.";
+                }
+                
+            }
+            else
+            {
+                message = "사용자 가입을 위한 정보를 올바르게 입력하세요.";
+            }
+
+            ModelState.AddModelError(string.Empty, message);
+            return View(register); 
         }
 
         [HttpGet]

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using NetCore.Services.Bridges;
 using NetCore.Services.Data;
 using NetCore.Services.Interfaces;
 using System;
@@ -51,6 +52,20 @@ namespace NetCore.Services.Svcs
             return GetPasswordHash(userId, password, guidSalt, rngSalt).Equals(passwordHash); // passwordHash는 데이터베이스에 저장된 해시값, GetPasswordHash()는 지금 입력한 비밀번호로 해시값을 계산한 것, 둘이 같으면 true, 아니면 false
         }
 
+        private PasswordHashInfo PasswordInfo(string userId, string password)
+        {
+            string guidSalt = GetGuidSalt();
+            string rngSalt = GetRNGSalt();
+            var passwordInfo = new PasswordHashInfo()
+            {
+                GUIDSalt = guidSalt,
+                RNGSalt = rngSalt,
+                PasswordHash = GetPasswordHash(userId, password, guidSalt, rngSalt)
+            };
+
+            return passwordInfo;
+        }
+
 
         #endregion
 
@@ -69,13 +84,16 @@ namespace NetCore.Services.Svcs
             return GetPasswordHash(userId, password, guidSalt, rngSalt);
         }
 
-        public bool MatchTheUserInfo(string userId, string password)
+        
+
+        bool IPasswordHasher.CheckThePasswordInfo(string userId, string password, string guidSalt, string rngSalt, string passwordHash)
         {
-            var user = _context.Users.Where(u => u.UserId.Equals(userId)).FirstOrDefault();
-            string guidSalt = user.GUIDSalt;
-            string rngSalt = user.RNGSalt;
-            string passwordHash = user.PasswordHash; // DB에서 불러옴
             return CheckThePasswordInfo(userId, password, guidSalt, rngSalt, passwordHash);
+        }
+
+        PasswordHashInfo IPasswordHasher.SetPasswordInfo(string userId, string password)
+        {
+            return PasswordInfo(userId, password);
         }
     }
 }
