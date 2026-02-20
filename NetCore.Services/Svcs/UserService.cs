@@ -119,6 +119,7 @@ namespace NetCore.Services.Svcs
             return _context.UserRoles.Where(ur => ur.RoleId.Equals(roleId)).FirstOrDefault();
         }
 
+        // 아이디에 대해서 대소문자 처리(ToLower())
         private int RegisterUser(RegisterInfo register)
         {
             var utcNow = DateTime.UtcNow;
@@ -126,7 +127,7 @@ namespace NetCore.Services.Svcs
 
             var user = new User()
             {
-                UserId = register.UserId,
+                UserId = register.UserId.ToLower(),
                 UserName = register.UserName,
                 UserEmail = register.UserEmail,
                 GUIDSalt = passwordInfo.GUIDSalt,
@@ -139,7 +140,7 @@ namespace NetCore.Services.Svcs
 
             var userRolesByUser = new UserRolesByUser()
             {
-                UserId = register.UserId,
+                UserId = register.UserId.ToLower(),
                 RoleId = "AssociateUser",
                 OwnedUtcDate = utcNow
             };

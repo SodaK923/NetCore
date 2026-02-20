@@ -37,10 +37,11 @@ namespace NetCore.Services.Svcs
             return Convert.ToBase64String(salt);
         }
 
+        // 아이디와 비밀번호에 대해서 대소문자 처리(ToLower())
         private string GetPasswordHash(string userId, string password, string guidSalt, string rngSalt)
         {
             return Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: userId + password + guidSalt,
+                password: userId.ToLower() + password.ToLower() + guidSalt,
                 salt: Encoding.UTF8.GetBytes(rngSalt),
                 prf: KeyDerivationPrf.HMACSHA512,
                 iterationCount: 45000, // 10000, 25000, 45000
