@@ -151,20 +151,74 @@ namespace NetCore.Services.Svcs
             return _context.SaveChanges();
         }
 
-        #endregion
-
-        bool IUser.MatchTheUserInfo(LoginInfo login)
+        private UserInfo GetUserInfoForUpdate(string userId)
         {
-            //return CheckTheUserInfo(login.UserId, login.Password);
+            var user = GetUserInfo(userId);
+            var userInfo = new UserInfo()
+            {
+                UserId = null,
+                UserName = user.UserName,
+                UserEmail = user.UserEmail,
+                ChangeInfo = new ChangeInfo()
+                {
+                    UserName = user.UserName,
+                    UserEmail = user.UserEmail
+                }
+            };
 
+            return userInfo;
+        }
+
+        private int UpdateUser(UserInfo user)
+        {
+            var userInfo = _context.Users.Where(u => u.UserId.Equals(user.UserId)).FirstOrDefault();
+
+            if (userInfo == null)
+            {
+                return 0;
+            }
+
+            bool check = _hasher.CheckThePasswordInfo(user.UserId, user.Password, userInfo.GUIDSalt, userInfo.RNGSalt, userInfo.PasswordHash);
+
+            int rowAffected = 0;
+
+            if (check)
+            {
+                _context.Update(userInfo);
+
+                userInfo.UserName = user.UserName;
+                userInfo.UserEmail = user.UserEmail;
+
+                rowAffected = _context.SaveChanges();
+            }
+
+            return rowAffected;
+        }
+
+        private bool MatchTheUserInfo(LoginInfo login)
+        {
             var user = _context.Users.Where(u => u.UserId.Equals(login.UserId)).FirstOrDefault();
 
-            if(user == null)
+            if (user == null)
             {
                 return false;
             }
 
             return _hasher.CheckThePasswordInfo(login.UserId, login.Password, user.GUIDSalt, user.RNGSalt, user.PasswordHash);
+        }
+
+        private bool CompareInfo(UserInfo user)
+        {
+            return user.ChangeInfo.Equals(user);
+        }
+
+        #endregion
+
+        bool IUser.MatchTheUserInfo(LoginInfo login)
+        {
+            //return CheckTheUserInfo(login.UserId, login.Password);
+            return MatchTheUserInfo(login);
+            
         }
 
         User IUser.GetUserInfo(string userId)
@@ -180,6 +234,21 @@ namespace NetCore.Services.Svcs
         int IUser.RegisterUser(RegisterInfo register)
         {
             return RegisterUser(register);
+        }
+
+        UserInfo IUser.GetUserInfoForUpdate(string userId)
+        {
+            return GetUserInfoForUpdate(userId);
+        }
+
+        int IUser.UpdateUser(UserInfo user)
+        {
+            return UpdateUser(user);
+        }
+
+        bool IUser.CompareInfo(UserInfo user)
+        {
+            return CompareInfo(user);
         }
     }
 
