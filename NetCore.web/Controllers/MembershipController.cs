@@ -48,7 +48,7 @@ namespace NetCore.web.Controllers
                 return RedirectToAction(nameof(MembershipController.Index), "Membership"); // 로컬이 아니면 홈으로
             }
         }
-
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
@@ -216,6 +216,38 @@ namespace NetCore.web.Controllers
 
             ModelState.AddModelError(string.Empty, message);
             return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Withdrawn(WithdrawnInfo withdrawn)
+        {
+            string message = string.Empty;
+
+            if (ModelState.IsValid)
+            {
+                // 탈퇴 서비스
+                if (_user.WithdrawnUser(withdrawn) > 0)
+                {
+                    TempData["Message"] = "사용자 탈퇴가 성공적으로 이루어졌습니다.";
+
+                    await _context.SignOutAsync(scheme: CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    return RedirectToAction("Index", "Membership");
+                }
+                else
+                {
+                    message = "사용자가 탈퇴처리되지 않았습니다.";
+                }
+                
+            }
+            else
+            {
+                message = "사용자가 탈퇴하기 위한 정보를 올바르게 입력하세요.";
+            }
+
+            ViewData["Message"] = message;
+            return View("Index", withdrawn);
         }
 
         [HttpGet]
