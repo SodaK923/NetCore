@@ -24,6 +24,7 @@ namespace NetCore.web
             // 의존성 주입을 사용하기 위해서 서비스로 등록
             // 껍데기             내용물
             // IUser 인터페이스에 UserService 클래스 인스턴스 주입
+            builder.Services.AddScoped<DBFirstDbInitializer>();
             builder.Services.AddScoped<IUser, UserService>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
@@ -78,6 +79,19 @@ namespace NetCore.web
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
+            // 서비스가 빌드된 후 호출
+            // --- 여기서부터 추가! ---
+            // 8버전에서는 app.Services를 통해 직접 Scope를 만들 수 있어.
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                    // 아까 등록한 Initializer를 가져와서 실행
+                    var initializer = services.GetRequiredService<DBFirstDbInitializer>();
+                    int rowAffected = initializer.PlantSeedData();
+                
+            }
+            // --- 여기까지 추가 ---
             app.Run();
         }
     }
